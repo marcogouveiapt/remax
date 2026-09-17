@@ -1,0 +1,42 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "speed-to-lead",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+
+  "observability": { "enabled": true },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "speed-to-lead-db",
+      "database_id": "PLACEHOLDER_SUBSTITUIDO_NO_DEPLOY",
+      "migrations_dir": "./migrations"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "RAW_EMAILS",
+      "bucket_name": "speed-to-lead-emails"
+    }
+  ],
+
+  "kv_namespaces": [
+    {
+      "binding": "SESSOES",
+      "id": "PLACEHOLDER_SUBSTITUIDO_NO_DEPLOY"
+    }
+  ],
+
+  "vars": {
+    "APP_NOME": "Speed-to-Lead"
+  }
+}
