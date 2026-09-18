@@ -53,7 +53,7 @@ async function agendarCadencia(db, leadId) {
  * A lead e SEMPRE gravada, mesmo que a IA falhe ou nao esteja configurada.
  * Falhar a qualificacao nunca pode significar perder a lead.
  */
-export async function criarLead(env, dados, { qualificarAgora = true } = {}) {
+export async function criarLead(env, dados, { qualificarAgora = true, ctx = null } = {}) {
   const db = env.DB;
   const leadId = id();
 
@@ -89,8 +89,11 @@ export async function criarLead(env, dados, { qualificarAgora = true } = {}) {
   await agendarCadencia(db, leadId);
 
   if (qualificarAgora) {
-    // Nao bloqueia a resposta: a lead ja esta gravada e visivel.
-    await qualificarLead(env, leadId, dados.bruto || montarBruto(dados));
+    // A qualificacao demora 8 a 9 segundos. Nunca pode fazer o formulario
+    // esperar: a lead ja esta gravada e visivel, o score chega a seguir.
+    const trabalho = qualificarLead(env, leadId, dados.bruto || montarBruto(dados));
+    if (ctx && typeof ctx.waitUntil === 'function') ctx.waitUntil(trabalho);
+    else await trabalho;
   }
 
   return { id: leadId, duplicada: false, consultor_id: consultorId };

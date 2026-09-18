@@ -92,7 +92,7 @@ function abrirApp() {
   $('#url-webhook').textContent = location.origin + '/api/leads';
   carregarLeads();
   carregarMetricas();
-  setInterval(carregarLeads, 20000);   // atualiza a lista
+  setInterval(carregarLeads, 8000);    // atualiza a lista: em palco tem de parecer vivo
   setInterval(actualizarRelogios, 1000); // o relogio corre sempre
 }
 

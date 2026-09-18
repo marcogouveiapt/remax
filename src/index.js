@@ -39,7 +39,7 @@ function enriquecerConsultor(c) {
 
 export default {
   /** ---------------------------------------------------------------- HTTP */
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const url = new URL(req.url);
     const p = url.pathname;
     const db = env.DB;
@@ -65,7 +65,7 @@ export default {
           origem: corpo.origem || 'formulario',
           portal: corpo.portal || 'proprio',
           parser: 'nativo',
-        });
+        }, { ctx });
         return json({ ok: true, ...r }, 201);
       }
 
