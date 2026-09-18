@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS leads (
   primeira_resposta_em TEXT,
   segundos_ate_resposta INTEGER,
   -- Rastreabilidade
-  raw_key             TEXT,                 -- chave do email original no R2
+  raw_key             TEXT,                 -- id em emails_brutos
   parser              TEXT                  -- regex:idealista | llm | nativo
 );
 
@@ -83,6 +83,21 @@ CREATE TABLE IF NOT EXISTS follow_ups (
 );
 
 CREATE INDEX IF NOT EXISTS idx_followups_agenda ON follow_ups(estado, agendado_para);
+
+-- Copia do email original. Fica aqui e nao em armazenamento de objetos
+-- porque o R2 exige subscricao paga, e esta aplicacao tem de correr numa
+-- conta gratuita sem cartao. Um email de lead sao poucos KB; a D1 gratuita
+-- tem 5 GB, o que chega para centenas de milhares de leads.
+CREATE TABLE IF NOT EXISTS emails_brutos (
+  id         TEXT PRIMARY KEY,
+  lead_id    TEXT REFERENCES leads(id) ON DELETE CASCADE,
+  remetente  TEXT,
+  assunto    TEXT,
+  corpo      TEXT,
+  criado_em  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_emails_lead ON emails_brutos(lead_id);
 
 -- Definicoes da instalacao (chaves de API guardadas aqui, nao em ficheiros)
 CREATE TABLE IF NOT EXISTS definicoes (

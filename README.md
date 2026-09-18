@@ -169,7 +169,7 @@ mantém confortável face ao artigo 22.º do RGPD.
 
 ## Para quem percebe de código
 
-Cloudflare Workers + D1 (SQLite) + R2 + assets estáticos. Sem framework,
+Cloudflare Workers + D1 (SQLite) + assets estáticos. Sem framework,
 sem passo de build na interface.
 
 ```bash
@@ -189,7 +189,9 @@ npx wrangler dev
 
 Os adaptadores em `parsers.js` estão desenhados em duas camadas: regex por
 portal, com recurso ao modelo quando o regex falha. O email original vai
-sempre para o R2, para reprocessamento quando um portal muda o template.
+sempre para a tabela `emails_brutos` na D1, para reprocessamento quando um
+portal muda o template. Nada de R2: exige subscrição paga e esta aplicação
+tem de correr numa conta gratuita sem cartão.
 
 **Contribuições bem-vindas**, sobretudo adaptadores para portais novos.
 

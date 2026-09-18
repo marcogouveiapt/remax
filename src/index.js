@@ -310,8 +310,10 @@ export default {
 
       // Guarda sempre o original: quando um portal mudar o template,
       // reprocessa-se sem ter perdido nada.
-      const chaveR2 = 'emails/' + new Date().toISOString().slice(0, 10) + '/' + crypto.randomUUID() + '.eml';
-      if (env.RAW_EMAILS) ctx.waitUntil(env.RAW_EMAILS.put(chaveR2, buffer));
+      const brutoId = crypto.randomUUID();
+      await env.DB.prepare(
+        'INSERT INTO emails_brutos (id, remetente, assunto, corpo) VALUES (?,?,?,?)'
+      ).bind(brutoId, mensagem.from, analisado.subject || null, texto).run();
 
       const determinista = parseDeterminista(contexto);
       const portal = detetarPortal(contexto);
@@ -320,7 +322,7 @@ export default {
         ...(determinista || {}),
         portal: (determinista && determinista.portal) || portal,
         origem: 'email',
-        raw_key: chaveR2,
+        raw_key: brutoId,
         parser: (determinista && determinista.parser) || 'llm',
         // Se o regex falhou, a IA recebe o email inteiro e extrai o que conseguir.
         bruto: 'Assunto: ' + (analisado.subject || '') + '\nDe: ' + mensagem.from + '\n\n' + texto,

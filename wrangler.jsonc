@@ -22,12 +22,6 @@
     }
   ],
 
-  "r2_buckets": [
-    {
-      "binding": "RAW_EMAILS",
-      "bucket_name": "speed-to-lead-emails"
-    }
-  ],
 
   "kv_namespaces": [
     {
